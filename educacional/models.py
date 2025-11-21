@@ -20,6 +20,11 @@ class Aluno(Usuario):
 
     matricula = models.CharField(max_length=20, unique=True)
     escola = models.CharField(max_length=200)
+
+    declaracao_escolar = models.FileField(upload_to='declaracoes_escolares/', blank=True, null=True)
+    
+    data_validade_cadastro = models.DateField(null=True, blank=True, help_text="Data para renovação semestral")
+
     
     status_aluno = models.CharField(
         max_length=20, 
