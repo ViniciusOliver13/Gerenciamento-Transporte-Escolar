@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm text-center">
+    <h1 class="display-5 fw-bold">Bem-vindo ao Sistema</h1>
+    <p class="col-md-8 fs-4 mx-auto">Gerencie a frota, motoristas e alunos da rede municipal de ensino de forma centralizada.</p>
+    <div class="d-flex gap-3 justify-content-center mt-4">
+        <a class="btn btn-primary btn-lg" href="/admin" target="_blank">
+            <i class="bi bi-gear-fill"></i> Acessar Painel Admin
+        </a>
+        <button class="btn btn-outline-secondary btn-lg" type="button">Ver Relatórios</button>
+    </div>
+</div>
+
+<div class="row text-center">
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <h3>🚍 Veículos</h3>
+            <p>Gerencie a frota municipal.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <h3>👨‍✈️ Motoristas</h3>
+            <p>Controle de escala e CNH.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+            <h3>🎓 Alunos</h3>
+            <p>Matrículas e rotas definidas.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
