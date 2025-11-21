@@ -1,9 +1,19 @@
 from django.db import models
 # Importando a classe abstrata do app vizinho
 from usuarios.models import Usuario
+from django.contrib.auth.models import User
+
 
 class Aluno(Usuario):
     # Herda nome, cpf, data_nascimento, endereco de 'Usuario'
+
+    user_auth = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='aluno_profile',
+        null=True, 
+        blank=True
+    )
     
     class StatusAluno(models.TextChoices):
         ATIVO = 'ATIVO', 'Ativo'
