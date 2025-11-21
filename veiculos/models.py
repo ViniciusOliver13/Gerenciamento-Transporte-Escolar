@@ -1,3 +1,11 @@
 from django.db import models
 
-# Create your models here.
+class Veiculo(models.Model):
+    # Campos definidos no diagrama
+    placa = models.CharField(max_length=10, unique=True)
+    modelo = models.CharField(max_length=50)
+    capacidade = models.IntegerField()
+    ano = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.modelo} - {self.placa}"
