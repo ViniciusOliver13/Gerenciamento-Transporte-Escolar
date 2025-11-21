@@ -1,0 +1,32 @@
+<h1>Gerenciamento de Veículos</h1>
+<p><a href="{% url 'veiculos:veiculo_create' %}">Cadastrar Novo Veículo</a></p>
+
+{% if veiculos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Placa</th>
+                <th>Modelo</th>
+                <th>Capacidade</th>
+                <th>Motorista Principal</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for veiculo in veiculos %}
+            <tr>
+                <td>{{ veiculo.placa }}</td>
+                <td>{{ veiculo.modelo }}</td>
+                <td>{{ veiculo.capacidade }}</td>
+                <td>{{ veiculo.motorista.nome|default:"Não Associado" }}</td>
+                <td>
+                    <a href="{% url 'veiculos:veiculo_update' veiculo.pk %}">Editar</a> |
+                    <a href="{% url 'veiculos:veiculo_delete' veiculo.pk %}">Remover</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Nenhum veículo cadastrado.</p>
+{% endif %}

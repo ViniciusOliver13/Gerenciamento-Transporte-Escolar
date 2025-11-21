@@ -1,0 +1,13 @@
+{% if form.instance.pk %}
+    <h1>Editar Veículo: {{ form.instance.placa }}</h1>
+{% else %}
+    <h1>Cadastrar Novo Veículo</h1>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar Veículo</button>
+</form>
+
+<p><a href="{% url 'veiculos:veiculo_list' %}">Voltar para a Lista</a></p>

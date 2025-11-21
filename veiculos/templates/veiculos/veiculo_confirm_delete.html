@@ -1,0 +1,9 @@
+<h1>Confirmar Remoção</h1>
+<p>Tem certeza que deseja remover o veículo de placa <strong>{{ object.placa }}</strong>?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Remoção</button>
+</form>
+
+<p><a href="{% url 'veiculos:veiculo_list' %}">Cancelar</a></p>
