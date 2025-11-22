@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Transporte Escolar</title>
+  </head>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f3;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 15px 0; 
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    header h1 { margin: 0; font-size: 1.5rem; }
+
+    .caixa-login {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 350px; 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px 0; 
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .label {
+      text-align: left;
+      margin-bottom: 2px;
+      font-weight: bold;
+      color: #555;
+      font-size: 0.9rem;
+    }
+    
+    .erro-msg {
+        color: #dc3545;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-size: 0.9rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+
+  <body>
+    <header>
+      <h1>Transporte Escolar</h1>
+    </header>
+
+    <div class="caixa-login">
+      <h2>Acesso</h2>
+      
+      {% if form.errors %}
+        <div class="erro-msg">
+            CPF ou Senha incorretos. Tente novamente.
+        </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}">
+        {% csrf_token %} 
+        
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <div class="label">CPF:</div>
+        {{ form.username }} 
+        
+        <div class="label">Senha:</div>
+        {{ form.password }}
+
+        <button type="submit">ENTRAR</button>
+      </form>
+    </div>
+  </body>
+</html>
