@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3>{% if form.instance.pk %}Editar Aluno{% else %}Cadastrar Aluno{% endif %}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nome Completo</label>
+                        <input type="text" name="nome" class="form-control" value="{{ form.nome.value|default:'' }}" required>
+                        {{ form.nome.errors }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">CPF</label>
+                        <input type="text" name="cpf" class="form-control" value="{{ form.cpf.value|default:'' }}" required>
+                        {{ form.cpf.errors }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Data Nascimento</label>
+                        <input type="date" name="data_nascimento" class="form-control" value="{{ form.data_nascimento.value|date:'Y-m-d'|default:'' }}">
+                        {{ form.data_nascimento.errors }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Matrícula</label>
+                        <input type="text" name="matricula" class="form-control" value="{{ form.matricula.value|default:'' }}">
+                        {{ form.matricula.errors }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Escola</label>
+                        <input type="text" name="escola" class="form-control" value="{{ form.escola.value|default:'' }}">
+                        {{ form.escola.errors }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Validade do Cadastro</label>
+                        <input type="date" name="data_validade_cadastro" class="form-control" value="{{ form.data_validade_cadastro.value|date:'Y-m-d'|default:'' }}">
+                        {{ form.data_validade_cadastro.errors }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Declaração Escolar (PDF)</label>
+                        {{ form.declaracao_escolar }}
+                        {% if form.instance.declaracao_escolar %}
+                            <div class="form-text">Atual: <a href="{{ form.instance.declaracao_escolar.url }}" target="_blank">Ver arquivo atual</a></div>
+                        {% endif %}
+                        {{ form.declaracao_escolar.errors }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Status</label>
+                        <select name="status_aluno" class="form-select">
+                            {% for value, label in form.fields.status_aluno.choices %}
+                                <option value="{{ value }}" {% if form.status_aluno.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'aluno_list' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

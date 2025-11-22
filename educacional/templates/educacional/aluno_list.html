@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Alunos</h2>
+    
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <form method="get" class="d-flex">
+                <input class="form-control me-2" type="search" name="busca" placeholder="Buscar por Nome, CPF ou Matrícula" value="{{ request.GET.busca }}">
+                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
+            </form>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'aluno_create' %}" class="btn btn-success">+ Novo Aluno</a>
+        </div>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Matrícula</th>
+                <th>Nome</th>
+                <th>Escola</th>
+                <th>Validade</th>
+                <th>Status</th>
+                <th>Declaração</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aluno in alunos %}
+            <tr>
+                <td>{{ aluno.matricula }}</td>
+                <td>
+                    {{ aluno.nome }}
+                    {% if aluno.data_validade_cadastro and aluno.data_validade_cadastro < hoje %}
+                        <span text-danger" title="Cadastro Vencido">⚠️</span>
+                    {% endif %}
+                </td>
+                <td>{{ aluno.escola }}</td>
+                <td>{{ aluno.data_validade_cadastro|date:"d/m/Y"|default:"-" }}</td>
+                <td>
+                    {% if aluno.status_aluno == 'ATIVO' %}
+                        <span class="badge bg-success">Ativo</span>
+                    {% elif aluno.status_aluno == 'INATIVO' %}
+                        <span class="badge bg-danger">Inativo</span>
+                    {% elif aluno.status_aluno == 'PENDENTE_RENOVACAO' %}
+                        <span class="badge bg-warning text-dark">Pendente</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ aluno.status_aluno }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if aluno.declaracao_escolar %}
+                        <a href="{{ aluno.declaracao_escolar.url }}" target="_blank" class="btn btn-sm btn-info">Ver Declaração</a>
+                    {% else %}
+                        <span class="text-muted">Sem arquivo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'aluno_update' aluno.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                    <a href="{% url 'aluno_delete' aluno.pk %}" class="btn btn-sm btn-danger">Excluir</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">Nenhum aluno encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
