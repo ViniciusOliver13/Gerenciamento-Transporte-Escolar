@@ -19,6 +19,18 @@ class Rota(models.Model):
         choices=Turno.choices,
         default=Turno.MATUTINO
     )
+
+    horario_inicio = models.TimeField(
+        help_text="Horário de saída do ponto inicial", 
+        null=True, 
+        blank=True
+    )
+    
+    prazo_limite_confirmacao = models.TimeField(
+        help_text="Horário limite para o aluno confirmar",
+        null=True,
+        blank=True
+    )
     
     # Convertido de 'prazoLimiteConfirmacao' para o padrão Python (snake_case)
     prazo_limite_confirmacao = models.TimeField()
