@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from usuarios.models import Usuario
+from django.contrib.auth.models import User
+
 
 class Aluno(Usuario):
     # Herda nome, cpf, data_nascimento, endereco de 'Usuario'
