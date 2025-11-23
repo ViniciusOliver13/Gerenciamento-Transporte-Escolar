@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Nova{% endif %} Rota{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-{% if form.instance.pk %}pencil{% else %}plus-circle{% endif %}"></i>
+                    {% if form.instance.pk %}Editar Rota{% else %}Nova Rota{% endif %}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_nome" class="form-label fw-bold">Nome da Rota</label>
+                        {{ form.nome }}
+                        {% if form.nome.errors %}
+                            <div class="text-danger small">{{ form.nome.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_turno" class="form-label fw-bold">Turno</label>
+                            {{ form.turno }}
+                            {% if form.turno.errors %}
+                                <div class="text-danger small">{{ form.turno.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="id_horario_inicio" class="form-label fw-bold">Horário de Início</label>
+                            {{ form.horario_inicio }}
+                            {% if form.horario_inicio.errors %}
+                                <div class="text-danger small">{{ form.horario_inicio.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_prazo_limite_confirmacao" class="form-label fw-bold">
+                            Prazo Limite para Confirmação
+                            <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip" title="Horário limite para o aluno confirmar presença"></i>
+                        </label>
+                        {{ form.prazo_limite_confirmacao }}
+                        {% if form.prazo_limite_confirmacao.errors %}
+                            <div class="text-danger small">{{ form.prazo_limite_confirmacao.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_veiculo" class="form-label fw-bold">Veículo</label>
+                        {{ form.veiculo }}
+                        {% if form.veiculo.errors %}
+                            <div class="text-danger small">{{ form.veiculo.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_motorista" class="form-label fw-bold">Motorista</label>
+                        {{ form.motorista }}
+                        {% if form.motorista.errors %}
+                            <div class="text-danger small">{{ form.motorista.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-lightbulb"></i> <strong>Dica:</strong> 
+                        Após criar a rota, você poderá adicionar os alunos na tela de detalhes.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Salvar Rota
+                        </button>
+                        <a href="{% url 'rotas:rota_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Adiciona classe form-control aos campos do formulário
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('input:not([type="checkbox"]), select, textarea');
+        inputs.forEach(input => {
+            input.classList.add('form-control');
+        });
+        
+        // Ativa tooltips do Bootstrap
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}
