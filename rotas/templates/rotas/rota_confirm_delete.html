@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Deletar Rota{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão</h5>
+            </div>
+            <div class="card-body">
+                <p>Tem certeza que deseja deletar a rota <strong>"{{ rota.nome }}"</strong>?</p>
+                
+                {% if rota.alunos.count > 0 %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> 
+                    Esta rota possui <strong>{{ rota.alunos.count }} aluno(s)</strong> alocados.
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Sim, Deletar
+                        </button>
+                        <a href="{% url 'rotas:rota_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
