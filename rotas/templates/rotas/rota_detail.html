@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ rota.nome }} - Detalhes{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Painel Superior: Informações da Rota -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-signpost-2"></i> {{ rota.nome }}</h4>
+            <div class="d-flex gap-2">
+                <a href="{% url 'rotas:rota_update' rota.pk %}" class="btn btn-sm btn-light">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+                <a href="{% url 'rotas:rota_delete' rota.pk %}" class="btn btn-sm btn-danger">
+                    <i class="bi bi-trash"></i> Deletar
+                </a>
+                <a href="{% url 'rotas:rota_list' %}" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- Informações Básicas -->
+            <div class="col-md-6">
+                <h6 class="text-muted mb-3"><i class="bi bi-info-circle"></i> Informações Básicas</h6>
+                
+                <p class="mb-2">
+                    <strong>Turno:</strong>
+                    {% if rota.turno == 'MATUTINO' %}
+                        <span class="badge bg-warning text-dark"><i class="bi bi-sunrise"></i> Matutino</span>
+                    {% elif rota.turno == 'VESPERTINO' %}
+                        <span class="badge bg-info text-dark"><i class="bi bi-sun"></i> Vespertino</span>
+                    {% else %}
+                        <span class="badge bg-dark"><i class="bi bi-moon-stars"></i> Noturno</span>
+                    {% endif %}
+                </p>
+
+                {% if rota.horario_inicio %}
+                <p class="mb-2"><strong>Horário de Início:</strong> {{ rota.horario_inicio|time:"H:i" }}</p>
+                {% endif %}
+
+                {% if rota.prazo_limite_confirmacao %}
+                <p class="mb-0"><strong>Prazo de Confirmação:</strong> {{ rota.prazo_limite_confirmacao|time:"H:i" }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Veículo e Motorista -->
+            <div class="col-md-6">
+                <h6 class="text-muted mb-3"><i class="bi bi-people"></i> Responsáveis</h6>
+                
+                <p class="mb-2">
+                    <strong><i class="bi bi-bus-front"></i> Veículo:</strong><br>
+                    {% if rota.veiculo %}
+                        {{ rota.veiculo.modelo }} - <span class="badge bg-secondary">{{ rota.veiculo.placa }}</span><br>
+                        <small class="text-muted">Capacidade: {{ rota.veiculo.capacidade }} lugares</small>
+                    {% else %}
+                        <span class="text-danger">⚠️ Nenhum veículo alocado</span>
+                    {% endif %}
+                </p>
+
+                <p class="mb-0">
+                    <strong><i class="bi bi-person-badge"></i> Motorista:</strong><br>
+                    {% if rota.motorista %}
+                        {{ rota.motorista.nome }}<br>
+                        <small class="text-muted">CNH: {{ rota.motorista.cnh }}</small>
+                    {% else %}
+                        <span class="text-danger">⚠️ Nenhum motorista alocado</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Barra de Ocupação -->
+        <hr>
+        <div class="mb-0">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0"><i class="bi bi-bar-chart-fill"></i> Ocupação do Veículo</h6>
+                <span class="fw-bold text-{% if percentual_ocupacao < 70 %}success{% elif percentual_ocupacao < 90 %}warning{% else %}danger{% endif %}">
+                    {{ total_alunos }}/{{ capacidade }} lugares ({{ percentual_ocupacao|floatformat:0 }}%)
+                </span>
+            </div>
+            <div class="progress" style="height: 20px;">
+                <div class="progress-bar 
+                    {% if percentual_ocupacao < 70 %}bg-success{% elif percentual_ocupacao < 90 %}bg-warning{% else %}bg-danger{% endif %}"
+                    role="progressbar" 
+                    style="width: {{ percentual_ocupacao }}%"
+                    aria-valuenow="{{ percentual_ocupacao }}" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                    {{ percentual_ocupacao|floatformat:0 }}%
+                </div>
+            </div>
+            {% if vagas_disponiveis <= 0 %}
+                <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> Capacidade máxima atingida!</small>
+            {% else %}
+                <small class="text-muted">{{ vagas_disponiveis }} vaga(s) disponível(is)</small>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Painel Inferior: Lista de Alunos -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-light">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-people-fill"></i> Alunos Alocados ({{ total_alunos }})</h5>
+            <a href="{% url 'rotas:adicionar_alunos' rota.pk %}" class="btn btn-success btn-sm">
+                <i class="bi bi-plus-circle"></i> Adicionar Alunos
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        {% if alunos %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Matrícula</th>
+                        <th>Escola</th>
+                        <th>Endereço</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for aluno in alunos %}
+                    <tr>
+                        <td class="fw-bold">{{ aluno.nome }}</td>
+                        <td><span class="badge bg-secondary">{{ aluno.matricula }}</span></td>
+                        <td>{{ aluno.escola }}</td>
+                        <td><small class="text-muted">{{ aluno.endereco|truncatewords:5 }}</small></td>
+                        <td class="text-center">
+                            <form method="post" action="{% url 'rotas:remover_aluno' rota.pk aluno.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                        onclick="return confirm('Tem certeza que deseja remover {{ aluno.nome }} desta rota?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center p-5 text-muted">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+            <p class="mt-3">Nenhum aluno alocado nesta rota ainda.</p>
+            <a href="{% url 'rotas:adicionar_alunos' rota.pk %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Adicionar Primeiro Aluno
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

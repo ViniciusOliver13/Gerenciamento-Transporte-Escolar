@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Alunos - {{ rota.nome }}{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-success text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="bi bi-person-plus-fill"></i> Adicionar Alunos à Rota</h4>
+            <a href="{% url 'rotas:rota_detail' rota.pk %}" class="btn btn-sm btn-light">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <strong><i class="bi bi-info-circle"></i> Rota:</strong> {{ rota.nome }} ({{ rota.get_turno_display }})<br>
+            <strong>Capacidade:</strong> {{ rota.total_alunos|default:0 }}/{% if rota.veiculo %}{{ rota.veiculo.capacidade }}{% else %}0{% endif %} lugares ocupados
+        </div>
+
+        <!-- Filtros -->
+        <form method="get" class="mb-4">
+            <div class="row g-2">
+                <div class="col-md-5">
+                    <label for="escola" class="form-label small">Filtrar por Escola:</label>
+                    <select name="escola" id="escola" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todas as escolas</option>
+                        {% for escola in escolas %}
+                            <option value="{{ escola }}" {% if escola_filtro == escola %}selected{% endif %}>
+                                {{ escola }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="bairro" class="form-label small">Filtrar por Bairro:</label>
+                    <input type="text" name="bairro" id="bairro" class="form-control" 
+                           placeholder="Digite o bairro..." value="{{ bairro_filtro }}">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Formulário de Seleção -->
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if alunos_disponiveis %}
+            <div class="mb-3">
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="selecionarTodos()">
+                    <i class="bi bi-check-all"></i> Selecionar Todos
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="desmarcarTodos()">
+                    <i class="bi bi-x-circle"></i> Desmarcar Todos
+                </button>
+                <span class="ms-3 text-muted" id="contador-selecionados">0 aluno(s) selecionado(s)</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;">
+                                <input type="checkbox" id="selecionar-todos" class="form-check-input">
+                            </th>
+                            <th>Nome</th>
+                            <th>Matrícula</th>
+                            <th>Escola</th>
+                            <th>Endereço</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aluno in alunos_disponiveis %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="alunos_selecionados" 
+                                       value="{{ aluno.id }}" 
+                                       class="form-check-input checkbox-aluno"
+                                       onchange="atualizarContador()">
+                            </td>
+                            <td class="fw-bold">{{ aluno.nome }}</td>
+                            <td><span class="badge bg-secondary">{{ aluno.matricula }}</span></td>
+                            <td>{{ aluno.escola }}</td>
+                            <td><small class="text-muted">{{ aluno.endereco|truncatewords:4 }}</small></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Adicionar Selecionados
+                </button>
+                <a href="{% url 'rotas:rota_detail' rota.pk %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+            </div>
+
+            {% else %}
+            <div class="alert alert-warning text-center">
+                <i class="bi bi-exclamation-triangle"></i> Nenhum aluno disponível com os filtros aplicados.
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<script>
+    // Selecionar/Desmarcar todos
+    document.getElementById('selecionar-todos').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.checkbox-aluno');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        atualizarContador();
+    });
+
+    function selecionarTodos() {
+        document.querySelectorAll('.checkbox-aluno').forEach(cb => cb.checked = true);
+        document.getElementById('selecionar-todos').checked = true;
+        atualizarContador();
+    }
+
+    function desmarcarTodos() {
+        document.querySelectorAll('.checkbox-aluno').forEach(cb => cb.checked = false);
+        document.getElementById('selecionar-todos').checked = false;
+        atualizarContador();
+    }
+
+    // Contador de selecionados
+    function atualizarContador() {
+        const total = document.querySelectorAll('.checkbox-aluno:checked').length;
+        document.getElementById('contador-selecionados').textContent = `${total} aluno(s) selecionado(s)`;
+    }
+</script>
+
+{% endblock %}
