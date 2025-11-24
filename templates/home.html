@@ -1,34 +1,101 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-white rounded-3 shadow-sm text-center">
-    <h1 class="display-5 fw-bold">Bem-vindo ao Sistema</h1>
-    <p class="col-md-8 fs-4 mx-auto">Gerencie a frota, motoristas e alunos da rede municipal de ensino de forma centralizada.</p>
-    <div class="d-flex gap-3 justify-content-center mt-4">
-        <a class="btn btn-primary btn-lg" href="/admin" target="_blank">
-            <i class="bi bi-gear-fill"></i> Acessar Painel Admin
+<div class="row align-items-center mb-5">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-dark ls-tight">Painel de Controle</h2>
+        <p class="text-muted mb-0">Visão geral da frota e logística escolar.</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="/admin" class="btn btn-dark rounded-pill px-4 shadow-sm">
+            <i class="bi bi-gear-fill me-1"></i> Administração
         </a>
-        <button class="btn btn-outline-secondary btn-lg" type="button">Ver Relatórios</button>
     </div>
 </div>
 
-<div class="row text-center">
-    <div class="col-md-4">
-        <div class="card p-3 shadow-sm">
-            <h3>🚍 Veículos</h3>
-            <p>Gerencie a frota municipal.</p>
-        </div>
+<div class="row g-4">
+    
+    <div class="col-md-6 col-lg-3">
+        <a href="{% url 'aluno_list' %}" class="text-decoration-none">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="bi bi-backpack-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary rounded-pill">Gestão</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Alunos</h5>
+                    <p class="text-muted small mb-0">Matrículas e documentos.</p>
+                </div>
+            </div>
+        </a>
     </div>
-    <div class="col-md-4">
-        <div class="card p-3 shadow-sm">
-            <h3>👨‍✈️ Motoristas</h3>
-            <p>Controle de escala e CNH.</p>
-        </div>
+
+    <div class="col-md-6 col-lg-3">
+        <a href="{% url 'rotas:rota_list' %}" class="text-decoration-none">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="bi bi-map-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary rounded-pill">Logística</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Rotas</h5>
+                    <p class="text-muted small mb-0">Itinerários e paradas.</p>
+                </div>
+            </div>
+        </a>
     </div>
-    <div class="col-md-4">
-        <div class="card p-3 shadow-sm">
-            <h3>🎓 Alunos</h3>
-            <p>Matrículas e rotas definidas.</p>
+
+    <div class="col-md-6 col-lg-3">
+        <a href="#" class="text-decoration-none">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="rounded-3 bg-warning bg-opacity-10 text-warning-emphasis d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="bi bi-bus-front-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary rounded-pill">Frota</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Veículos</h5>
+                    <p class="text-muted small mb-0">Manutenção e quilometragem.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <a href="#" class="text-decoration-none">
+            <div class="card h-100 border-0 shadow-sm rounded-4 hover-card">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="rounded-3 bg-info bg-opacity-10 text-info-emphasis d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <i class="bi bi-person-badge-fill fs-4"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary rounded-pill">RH</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Motoristas</h5>
+                    <p class="text-muted small mb-0">Escalas e CNH.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-1">Relatórios Operacionais</h5>
+                    <p class="text-muted small mb-0">Exporte dados mensais de consumo e transporte.</p>
+                </div>
+                <button class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="bi bi-download me-2"></i> Baixar Relatórios
+                </button>
+            </div>
         </div>
     </div>
 </div>

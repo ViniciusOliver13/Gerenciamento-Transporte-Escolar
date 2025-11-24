@@ -1,74 +1,129 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Lista de Alunos</h2>
+<div class="container py-4">
     
-    <div class="row mb-3">
-        <div class="col-md-8">
-            <form method="get" class="d-flex">
-                <input class="form-control me-2" type="search" name="busca" placeholder="Buscar por Nome, CPF ou Matrícula" value="{{ request.GET.busca }}">
-                <button class="btn btn-outline-primary" type="submit">Pesquisar</button>
-            </form>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Gestão de Alunos</h2>
+            <p class="text-muted small mb-0">Gerencie matrículas e documentações</p>
         </div>
-        <div class="col-md-4 text-end">
-            <a href="{% url 'aluno_create' %}" class="btn btn-success">+ Novo Aluno</a>
-        </div>
+        <a href="{% url 'aluno_create' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Novo Aluno
+        </a>
     </div>
 
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Matrícula</th>
-                <th>Nome</th>
-                <th>Escola</th>
-                <th>Validade</th>
-                <th>Status</th>
-                <th>Declaração</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for aluno in alunos %}
-            <tr>
-                <td>{{ aluno.matricula }}</td>
-                <td>
-                    {{ aluno.nome }}
-                    {% if aluno.data_validade_cadastro and aluno.data_validade_cadastro < hoje %}
-                        <span text-danger" title="Cadastro Vencido">⚠️</span>
-                    {% endif %}
-                </td>
-                <td>{{ aluno.escola }}</td>
-                <td>{{ aluno.data_validade_cadastro|date:"d/m/Y"|default:"-" }}</td>
-                <td>
-                    {% if aluno.status_aluno == 'ATIVO' %}
-                        <span class="badge bg-success">Ativo</span>
-                    {% elif aluno.status_aluno == 'INATIVO' %}
-                        <span class="badge bg-danger">Inativo</span>
-                    {% elif aluno.status_aluno == 'PENDENTE_RENOVACAO' %}
-                        <span class="badge bg-warning text-dark">Pendente</span>
-                    {% else %}
-                        <span class="badge bg-secondary">{{ aluno.status_aluno }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if aluno.declaracao_escolar %}
-                        <a href="{{ aluno.declaracao_escolar.url }}" target="_blank" class="btn btn-sm btn-info">Ver Declaração</a>
-                    {% else %}
-                        <span class="text-muted">Sem arquivo</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{% url 'aluno_update' aluno.pk %}" class="btn btn-sm btn-primary">Editar</a>
-                    <a href="{% url 'aluno_delete' aluno.pk %}" class="btn btn-sm btn-danger">Excluir</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="text-center">Nenhum aluno encontrado.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            
+            <div class="p-4 bg-light border-bottom">
+                <form method="get" class="d-flex gap-2">
+                    <div class="input-group input-group-lg shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 ps-3 text-muted">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input class="form-control border-start-0 bg-white" type="search" name="busca" 
+                               placeholder="Buscar por nome, CPF ou matrícula..." value="{{ request.GET.busca }}">
+                    </div>
+                    <button class="btn btn-dark px-4 rounded-3" type="submit">Filtrar</button>
+                </form>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="border-collapse: separate; border-spacing: 0;">
+                    <thead class="bg-light text-secondary text-uppercase small">
+                        <tr>
+                            <th class="ps-4 py-3 border-0">Aluno</th>
+                            <th class="py-3 border-0">Matrícula/Escola</th>
+                            <th class="py-3 border-0">Validade</th>
+                            <th class="py-3 border-0 text-center">Status</th>
+                            <th class="py-3 border-0 text-center">Doc</th>
+                            <th class="pe-4 py-3 border-0 text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aluno in alunos %}
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-bold me-3" 
+                                         style="width: 45px; height: 45px; font-size: 1.2rem;">
+                                        {{ aluno.nome|slice:":1" }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">{{ aluno.nome }}</div>
+                                        <div class="small text-muted">{{ aluno.cpf }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td>
+                                <div class="fw-semibold text-dark">{{ aluno.matricula }}</div>
+                                <div class="small text-muted">{{ aluno.escola }}</div>
+                            </td>
+
+                            <td>
+                                {% if aluno.data_validade_cadastro and aluno.data_validade_cadastro < hoje %}
+                                    <span class="text-danger fw-bold d-flex align-items-center gap-1">
+                                        <i class="bi bi-exclamation-circle-fill"></i> Vencido
+                                    </span>
+                                    <small class="text-danger">{{ aluno.data_validade_cadastro|date:"d/m/Y" }}</small>
+                                {% else %}
+                                    <span class="text-dark">{{ aluno.data_validade_cadastro|date:"d/m/Y"|default:"-" }}</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                {% if aluno.status_aluno == 'ATIVO' %}
+                                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">Ativo</span>
+                                {% elif aluno.status_aluno == 'INATIVO' %}
+                                    <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">Inativo</span>
+                                {% elif aluno.status_aluno == 'PENDENTE_RENOVACAO' %}
+                                    <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2">Pendente</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-secondary px-3 py-2">{{ aluno.status_aluno }}</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                {% if aluno.declaracao_escolar %}
+                                    <a href="{{ aluno.declaracao_escolar.url }}" target="_blank" class="btn btn-light btn-sm text-primary" title="Baixar PDF">
+                                        <i class="bi bi-file-earmark-pdf-fill fs-5"></i>
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted opacity-25"><i class="bi bi-file-earmark-x fs-5"></i></span>
+                                {% endif %}
+                            </td>
+
+                            <td class="pe-4 text-end">
+                                <div class="btn-group">
+                                    <a href="{% url 'aluno_update' aluno.pk %}" class="btn btn-outline-secondary btn-sm border-0" title="Editar">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{% url 'aluno_delete' aluno.pk %}" class="btn btn-outline-danger btn-sm border-0" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="bi bi-people fs-1 d-block mb-3 opacity-50"></i>
+                                    <p class="mb-1">Nenhum aluno encontrado.</p>
+                                    <a href="{% url 'aluno_create' %}" class="btn btn-link">Cadastrar o primeiro</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white text-muted small py-3 ps-4">
+            Total de registros: {{ alunos|length }}
+        </div>
+    </div>
 </div>
 {% endblock %}
