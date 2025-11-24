@@ -1,7 +1,10 @@
 from django.urls import path
-from .views import HomeView
+from . import views
+
+# Define o namespace da app
+app_name = 'usuarios'
 
 urlpatterns = [
-
-    path('', HomeView.as_view(), name='home'),
+    # Página inicial do sistema
+    path('', views.HomeView.as_view(), name='home'),
 ]

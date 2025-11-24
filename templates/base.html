@@ -16,9 +16,8 @@
             --primary-color: #0d6efd;
         }
         body {
-            background-color: #f8f9fa; /* Cinza bem clarinho de fundo */
+            background-color: #f8f9fa;
         }
-        /* Navbar com Blur e Transparência */
         .navbar-glass {
             background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -32,7 +31,6 @@
         .nav-link:hover, .nav-link.active {
             color: var(--primary-color) !important;
         }
-        /* Efeito de Hover nos Cards */
         .hover-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
@@ -48,7 +46,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3 shadow-sm">
       <div class="container">
-        <a class="navbar-brand d-flex align-items-center fw-bold text-dark gap-2" href="/">
+        <a class="navbar-brand d-flex align-items-center fw-bold text-dark gap-2" href="{% url 'usuarios:home' %}">
             <div class="bg-primary text-white rounded p-1 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
                 <i class="bi bi-bus-front-fill"></i>
             </div>
@@ -61,10 +59,10 @@
         
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-center gap-2">
-            <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'usuarios:home' %}">Dashboard</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Veículos</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Motoristas</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'aluno_list' %}">Alunos</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'educacional:aluno_list' %}">Alunos</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'rotas:rota_list' %}">Rotas</a></li>
             
             <li class="nav-item d-none d-lg-block mx-2 border-end" style="height: 20px;"></li>
@@ -76,9 +74,20 @@
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-3">
-                    <li><a class="dropdown-item small" href="/admin">Painel Admin</a></li>
+                    <li class="px-3 py-2 border-bottom">
+                        <small class="text-muted d-block">Logado como</small>
+                        <strong class="d-block">{{ user.username }}</strong>
+                    </li>
+                    <li><a class="dropdown-item small" href="/admin"><i class="bi bi-gear me-2"></i> Painel Admin</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item small text-danger" href="#">Sair</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item small text-danger border-0 bg-transparent w-100 text-start">
+                                <i class="bi bi-box-arrow-right me-2"></i> Sair
+                            </button>
+                        </form>
+                    </li>
                 </ul>
             </li>
           </ul>
@@ -93,6 +102,8 @@
                     <div class="d-flex align-items-center">
                         {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2 fs-5"></i>{% endif %}
                         {% if message.tags == 'danger' %}<i class="bi bi-exclamation-octagon-fill me-2 fs-5"></i>{% endif %}
+                        {% if message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>{% endif %}
+                        {% if message.tags == 'info' %}<i class="bi bi-info-circle-fill me-2 fs-5"></i>{% endif %}
                         <div>{{ message }}</div>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

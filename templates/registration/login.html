@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="card border-0 shadow-lg rounded-4" style="max-width: 450px; width: 100%;">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                    <i class="bi bi-bus-front-fill text-primary fs-1"></i>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">Bem-vindo</h3>
+                <p class="text-muted small mb-0">Acesse o Sistema de Transporte Escolar</p>
+            </div>
+            
+            {% if form.errors %}
+            <div class="alert alert-danger rounded-3 mb-4">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Erro:</strong> Usuário ou senha incorretos.
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <div class="mb-3">
+                    <label for="id_username" class="form-label fw-bold small text-secondary">
+                        <i class="bi bi-person-fill me-1"></i> Usuário
+                    </label>
+                    <input type="text" 
+                           name="username" 
+                           id="id_username"
+                           class="form-control form-control-lg rounded-3" 
+                           placeholder="Digite seu usuário"
+                           required
+                           autofocus>
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_password" class="form-label fw-bold small text-secondary">
+                        <i class="bi bi-lock-fill me-1"></i> Senha
+                    </label>
+                    <input type="password" 
+                           name="password" 
+                           id="id_password"
+                           class="form-control form-control-lg rounded-3" 
+                           placeholder="Digite sua senha"
+                           required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 fw-bold shadow-sm">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Entrar
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    Esqueceu sua senha? 
+                    <a href="{% url 'password_reset' %}" class="text-decoration-none">Recuperar</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
