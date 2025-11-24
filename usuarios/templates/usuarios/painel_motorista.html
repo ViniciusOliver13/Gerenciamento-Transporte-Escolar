@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Olá, {{ motorista.nome }}</h2>
+<ul>
+  {% for rota in rotas %}
+    <li>{{ rota.nome }}</li>
+  {% empty %}
+    <li>Você não está alocado em nenhuma rota no momento.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

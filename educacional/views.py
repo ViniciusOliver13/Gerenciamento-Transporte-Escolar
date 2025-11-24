@@ -6,6 +6,21 @@ from django.contrib import messages
 from django.db.models import Q
 from datetime import date
 from .models import Aluno
+from django.contrib.auth.decorators import login_required
+from rotas.models import Rota
+
+
+@login_required
+def painel_aluno(request):
+    aluno = getattr(request.user, 'aluno_profile', None)
+    if aluno is None:
+        rotas = []
+    else:
+        if hasattr(aluno, 'rotas'):
+            rotas = aluno.rotas.all()
+        else:
+            rotas = Rota.objects.filter(alunos=aluno)
+    return render(request, 'educacional/painel_aluno.html', {'aluno': aluno, 'rotas': rotas})
 
 
 class AlunoListView(ListView):

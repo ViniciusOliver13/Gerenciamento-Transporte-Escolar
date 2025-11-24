@@ -139,7 +139,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ==============================================================================
 LOGIN_URL = 'login'
 
-LOGIN_REDIRECT_URL = 'usuarios:home'
+LOGIN_REDIRECT_URL = 'usuarios:redirect_usuario'
 
 LOGOUT_REDIRECT_URL = 'login'
 

@@ -16,4 +16,7 @@ urlpatterns = [
     
     # Deletar aluno
     path('<int:pk>/deletar/', views.AlunoDeleteView.as_view(), name='aluno_delete'),
+
+    path('painel/', views.painel_aluno, name='painel_aluno'),  # Adiciona painel do aluno
+
 ]

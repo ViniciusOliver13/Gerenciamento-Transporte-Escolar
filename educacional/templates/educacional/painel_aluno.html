@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Olá, {{ aluno.nome }}</h2>
+<ul>
+  {% for rota in rotas %}
+    <li>{{ rota.nome }}</li>
+  {% empty %}
+    <li>Você ainda não está em nenhuma rota.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
