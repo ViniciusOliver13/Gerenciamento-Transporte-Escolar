@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="card border-0 shadow-lg text-center rounded-4" style="max-width: 500px;">
+        <div class="card-body p-5">
+            <div class="mb-4">
+                <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="bi bi-trash-fill text-danger fs-1"></i>
+                </div>
+            </div>
+            
+            <h3 class="fw-bold text-dark mb-2">Excluir Veículo?</h3>
+            <p class="text-muted mb-4">
+                Você vai remover o veículo <strong>{{ object.modelo }}</strong> ({{ object.placa }}) da frota.<br>
+                <span class="text-danger small fw-bold">Isso não pode ser desfeito.</span>
+            </p>
+
+            <form method="post" class="d-grid gap-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">
+                    Sim, Excluir Veículo
+                </button>
+                <a href="{% url 'veiculos:veiculo_list' %}" class="btn btn-light btn-lg rounded-pill border fw-bold text-muted">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

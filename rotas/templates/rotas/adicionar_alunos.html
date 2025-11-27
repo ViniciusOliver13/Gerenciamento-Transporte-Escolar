@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Alunos - {{ rota.nome }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-light p-4 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1 fw-bold text-dark">Adicionar Alunos</h5>
+                            <p class="mb-0 text-muted small">Rota: <strong>{{ rota.nome }}</strong></p>
+                        </div>
+                        <a href="{% url 'rotas:rota_detail' rota.pk %}" class="btn btn-outline-secondary rounded-pill btn-sm">
+                            Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    
+                    <div class="bg-light rounded-3 p-3 mb-4 border">
+                        <form method="get" class="row g-2 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label small fw-bold text-muted">Escola</label>
+                                <select name="escola" class="form-select form-select-sm rounded-3" onchange="this.form.submit()">
+                                    <option value="">Todas</option>
+                                    {% for escola in escolas %}
+                                        <option value="{{ escola }}" {% if escola_filtro == escola %}selected{% endif %}>{{ escola }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label small fw-bold text-muted">Bairro</label>
+                                <input type="text" name="bairro" class="form-control form-control-sm rounded-3" placeholder="Filtrar bairro..." value="{{ bairro_filtro }}">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary btn-sm w-100 rounded-3"><i class="bi bi-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if alunos_disponiveis %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 me-3" onclick="selecionarTodos()">Marcar Todos</button>
+                                <button type="button" class="btn btn-link btn-sm text-decoration-none p-0 text-muted" onclick="desmarcarTodos()">Desmarcar</button>
+                            </div>
+                            <span class="badge bg-primary rounded-pill" id="contador-selecionados">0 selecionados</span>
+                        </div>
+
+                        <div class="table-responsive border rounded-3 mb-4" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th class="ps-4" style="width: 40px;">#</th>
+                                        <th>Aluno</th>
+                                        <th>Escola</th>
+                                        <th>Endereço</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for aluno in alunos_disponiveis %}
+                                    <tr>
+                                        <td class="ps-4">
+                                            <input type="checkbox" name="alunos_selecionados" value="{{ aluno.id }}" class="form-check-input checkbox-aluno" onchange="atualizarContador()">
+                                        </td>
+                                        <td class="fw-bold">{{ aluno.nome }}</td>
+                                        <td>{{ aluno.escola }}</td>
+                                        <td class="small text-muted">{{ aluno.endereco }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'rotas:rota_detail' rota.pk %}" class="btn btn-light rounded-pill px-4 border">Cancelar</a>
+                            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold">
+                                Adicionar à Rota
+                            </button>
+                        </div>
+
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-filter-circle text-muted fs-1 mb-2"></i>
+                            <p class="text-muted">Nenhum aluno disponível com os filtros atuais.</p>
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selecionarTodos() {
+        document.querySelectorAll('.checkbox-aluno').forEach(cb => cb.checked = true);
+        atualizarContador();
+    }
+    function desmarcarTodos() {
+        document.querySelectorAll('.checkbox-aluno').forEach(cb => cb.checked = false);
+        atualizarContador();
+    }
+    function atualizarContador() {
+        const total = document.querySelectorAll('.checkbox-aluno:checked').length;
+        document.getElementById('contador-selecionados').textContent = `${total} selecionados`;
+    }
+</script>
+{% endblock %}

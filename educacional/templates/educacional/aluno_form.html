@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                    <h4 class="mb-0 fw-bold">
+                        {% if form.instance.pk %}
+                            <i class="bi bi-pencil-square me-2"></i> Editar Aluno
+                        {% else %}
+                            <i class="bi bi-person-plus-fill me-2"></i> Novo Cadastro
+                        {% endif %}
+                    </h4>
+                </div>
+                
+                <div class="card-body p-5">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation">
+                        {% csrf_token %}
+
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small ls-1"><i class="bi bi-person-badge me-1"></i> Dados Pessoais</h6>
+                        <div class="row g-3 mb-5">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" name="nome" class="form-control rounded-3" id="id_nome" placeholder="Nome" value="{{ form.nome.value|default:'' }}" required>
+                                    <label for="id_nome">Nome Completo</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input type="text" name="cpf" class="form-control rounded-3" id="id_cpf" placeholder="CPF" value="{{ form.cpf.value|default:'' }}" required>
+                                    <label for="id_cpf">CPF</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input type="date" name="data_nascimento" class="form-control rounded-3" id="id_nasc" value="{{ form.data_nascimento.value|date:'Y-m-d'|default:'' }}">
+                                    <label for="id_nasc">Nascimento</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small ls-1 border-top pt-4"><i class="bi bi-mortarboard me-1"></i> Escolaridade & Sistema</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" name="matricula" class="form-control rounded-3" id="id_mat" placeholder="Matrícula" value="{{ form.matricula.value|default:'' }}">
+                                    <label for="id_mat">Matrícula</label>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-floating">
+                                    <input type="text" name="escola" class="form-control rounded-3" id="id_escola" placeholder="Escola" value="{{ form.escola.value|default:'' }}">
+                                    <label for="id_escola">Nome da Escola</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input type="date" name="data_validade_cadastro" class="form-control rounded-3" id="id_val" value="{{ form.data_validade_cadastro.value|date:'Y-m-d'|default:'' }}">
+                                    <label for="id_val">Validade Cadastro</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 align-items-center bg-light p-3 rounded-3 mb-4 border">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small">Declaração Escolar (PDF)</label>
+                                <input type="file" name="declaracao_escolar" class="form-control form-control-sm">
+                                {% if form.instance.declaracao_escolar %}
+                                    <div class="mt-2 small">
+                                        <i class="bi bi-paperclip"></i> Atual: 
+                                        <a href="{{ form.instance.declaracao_escolar.url }}" target="_blank" class="text-decoration-none">Ver arquivo</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary small">Situação do Aluno</label>
+                                <select name="status_aluno" class="form-select">
+                                    {% for value, label in form.fields.status_aluno.choices %}
+                                        <option value="{{ value }}" {% if form.status_aluno.value == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3">
+                            <a href="{% url 'educacional:aluno_list' %}" class="btn btn-light px-4 border rounded-pill">Cancelar</a>
+                            <button type="submit" class="btn btn-success px-5 rounded-pill shadow-sm fw-bold">
+                                <i class="bi bi-check-lg me-1"></i> Salvar Dados
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

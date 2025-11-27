@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Rotas - Transporte Escolar{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">Gestão de Rotas</h2>
+            <p class="text-muted small mb-0">Itinerários e alocação de alunos</p>
+        </div>
+        <a href="{% url 'rotas:rota_create' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Nova Rota
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            
+            <div class="p-4 bg-light border-bottom">
+                <form method="get" class="d-flex gap-2">
+                    <div class="input-group input-group-lg shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 ps-3 text-muted"><i class="bi bi-search"></i></span>
+                        <input class="form-control border-start-0 bg-white" type="search" name="busca" placeholder="Buscar rota..." value="{{ request.GET.busca }}">
+                    </div>
+                    <button class="btn btn-dark px-4 rounded-3" type="submit">Filtrar</button>
+                </form>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-secondary text-uppercase small">
+                        <tr>
+                            <th class="ps-4 py-3">Rota / Turno</th>
+                            <th class="py-3">Veículo / Ocupação</th>
+                            <th class="py-3">Motorista</th>
+                            <th class="pe-4 py-3 text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rota in rotas %}
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                        <i class="bi bi-signpost-2-fill fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">{{ rota.nome }}</div>
+                                        {% if rota.turno == 'MATUTINO' %}
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill">Matutino</span>
+                                        {% elif rota.turno == 'VESPERTINO' %}
+                                            <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill">Vespertino</span>
+                                        {% else %}
+                                            <span class="badge bg-dark rounded-pill">Noturno</span>
+                                        {% endif %}
+                                        <small class="text-muted ms-2"><i class="bi bi-clock"></i> {{ rota.horario_inicio|default:"--" }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td style="min-width: 200px;">
+                                {% if rota.veiculo %}
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span class="fw-bold text-dark">{{ rota.veiculo.modelo }}</span>
+                                        <span class="text-muted">{{ rota.total_alunos }}/{{ rota.veiculo.capacidade }}</span>
+                                    </div>
+                                    {% widthratio rota.total_alunos rota.veiculo.capacidade 100 as percentual %}
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar {% if percentual|add:0 > 90 %}bg-danger{% elif percentual|add:0 > 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ percentual }}%;" 
+                                             aria-valuenow="{{ percentual }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Sem Veículo</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if rota.motorista %}
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center me-2 fw-bold small" style="width: 30px; height: 30px;">
+                                            {{ rota.motorista.nome|slice:":2"|upper }}
+                                        </div>
+                                        <span class="text-dark small">{{ rota.motorista.nome }}</span>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted small fst-italic">Não atribuído</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="pe-4 text-end">
+                                <div class="btn-group">
+                                    <a href="{% url 'rotas:rota_detail' rota.pk %}" class="btn btn-outline-primary btn-sm border-0" title="Ver Detalhes"><i class="bi bi-eye"></i></a>
+                                    <a href="{% url 'rotas:rota_update' rota.pk %}" class="btn btn-outline-secondary btn-sm border-0" title="Editar"><i class="bi bi-pencil-square"></i></a>
+                                    <a href="{% url 'rotas:rota_delete' rota.pk %}" class="btn btn-outline-danger btn-sm border-0" title="Excluir"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center py-5 text-muted">Nenhuma rota cadastrada.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

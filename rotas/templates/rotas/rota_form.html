@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Nova{% endif %} Rota{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-success text-white p-4 rounded-top-4" style="background: linear-gradient(135deg, #198754 0%, #146c43 100%);">
+                    <h4 class="mb-0 fw-bold">
+                        {% if form.instance.pk %}
+                            <i class="bi bi-pencil-square me-2"></i> Editar Rota
+                        {% else %}
+                            <i class="bi bi-signpost-2-fill me-2"></i> Nova Rota
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body p-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small ls-1"><i class="bi bi-geo-alt me-1"></i> Detalhes do Itinerário</h6>
+                        
+                        <div class="form-floating mb-3">
+                            <input type="text" name="nome" class="form-control rounded-3" id="id_nome" value="{{ form.nome.value|default:'' }}" required>
+                            <label for="id_nome">Nome da Rota</label>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select name="turno" class="form-select rounded-3" id="id_turno">
+                                        {% for value, label in form.fields.turno.choices %}
+                                            <option value="{{ value }}" {% if form.turno.value == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="id_turno">Turno</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="time" name="horario_inicio" class="form-control rounded-3" id="id_hora" value="{{ form.horario_inicio.value|default:'' }}">
+                                    <label for="id_hora">Horário de Início</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <input type="time" name="prazo_limite_confirmacao" class="form-control rounded-3" id="id_prazo" value="{{ form.prazo_limite_confirmacao.value|default:'' }}">
+                            <label for="id_prazo">Prazo Limite para Confirmação (Opcional)</label>
+                        </div>
+
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small ls-1 pt-3 border-top"><i class="bi bi-truck me-1"></i> Logística</h6>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select name="veiculo" class="form-select rounded-3" id="id_veiculo">
+                                        <option value="" selected>---------</option>
+                                        {% for choice in form.veiculo.field.queryset %}
+                                            <option value="{{ choice.pk }}" {% if form.veiculo.value == choice.pk %}selected{% endif %}>{{ choice }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="id_veiculo">Veículo Alocado</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select name="motorista" class="form-select rounded-3" id="id_motorista">
+                                        <option value="" selected>---------</option>
+                                        {% for choice in form.motorista.field.queryset %}
+                                            <option value="{{ choice.pk }}" {% if form.motorista.value == choice.pk %}selected{% endif %}>{{ choice.nome }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="id_motorista">Motorista Responsável</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'rotas:rota_list' %}" class="btn btn-light px-4 rounded-pill border">Cancelar</a>
+                            <button type="submit" class="btn btn-success px-5 rounded-pill fw-bold">Salvar Rota</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

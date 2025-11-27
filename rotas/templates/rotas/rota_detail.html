@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ rota.nome }} - Detalhes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+        <div class="card-header bg-primary text-white p-4 border-0" style="background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-white-50 text-uppercase small mb-1 ls-1">Detalhes da Rota</h6>
+                    <h2 class="mb-0 fw-bold">{{ rota.nome }}</h2>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'rotas:rota_update' rota.pk %}" class="btn btn-light rounded-pill shadow-sm fw-bold">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </a>
+                    <a href="{% url 'rotas:rota_list' %}" class="btn btn-outline-light rounded-pill">Voltar</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-md-4 border-end">
+                    <h6 class="text-muted text-uppercase small fw-bold mb-3">Informações</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3">
+                            <span class="d-block text-muted small">Turno</span>
+                            <span class="fw-bold text-dark">{{ rota.get_turno_display }}</span>
+                        </li>
+                        <li class="mb-3">
+                            <span class="d-block text-muted small">Horário de Início</span>
+                            <span class="fw-bold text-dark fs-5">{{ rota.horario_inicio|default:"--" }}</span>
+                        </li>
+                        {% if rota.prazo_limite_confirmacao %}
+                        <li>
+                            <span class="d-block text-muted small">Prazo Confirmação</span>
+                            <span class="text-danger fw-bold">{{ rota.prazo_limite_confirmacao }}</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="col-md-4 border-end">
+                    <h6 class="text-muted text-uppercase small fw-bold mb-3">Logística</h6>
+                    <div class="mb-3">
+                        <span class="d-block text-muted small">Veículo</span>
+                        {% if rota.veiculo %}
+                            <span class="fw-bold text-primary">{{ rota.veiculo.modelo }}</span>
+                            <span class="badge bg-light text-dark border ms-1">{{ rota.veiculo.placa }}</span>
+                        {% else %}
+                            <span class="text-danger fw-bold">Não alocado</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span class="d-block text-muted small">Motorista</span>
+                        {% if rota.motorista %}
+                            <div class="d-flex align-items-center mt-1">
+                                <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center me-2 fw-bold small" style="width: 25px; height: 25px;">
+                                    {{ rota.motorista.nome|slice:":1" }}
+                                </div>
+                                <span class="fw-bold text-dark">{{ rota.motorista.nome }}</span>
+                            </div>
+                        {% else %}
+                            <span class="text-danger">Não alocado</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <h6 class="text-muted text-uppercase small fw-bold mb-3">Ocupação</h6>
+                    
+                    {% if rota.veiculo and rota.veiculo.capacidade > 0 %}
+                        {% with total=rota.alunos.count cap=rota.veiculo.capacidade %}
+                            <div class="d-flex justify-content-between align-items-end mb-2">
+                                <h3 class="mb-0 fw-bold text-dark">{{ total }}</h3>
+                                <span class="text-muted small">de {{ cap }} lugares</span>
+                            </div>
+                            
+                            {% widthratio total cap 100 as percentual %}
+                            
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar {% if percentual|add:0 > 90 %}bg-danger{% elif percentual|add:0 > 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {{ percentual }}%"
+                                     aria-valuenow="{{ percentual }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">
+                                {{ percentual }}% ocupado
+                            </small>
+                        {% endwith %}
+                    {% else %}
+                        <div class="alert alert-warning small mb-0">
+                            Veículo não definido ou sem capacidade.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">Alunos na Rota</h5>
+            <a href="{% url 'rotas:adicionar_alunos' rota.pk %}" class="btn btn-success rounded-pill px-4 btn-sm fw-bold">
+                <i class="bi bi-person-plus-fill me-1"></i> Adicionar Alunos
+            </a>
+        </div>
+        
+        {% if alunos %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-secondary text-uppercase small">
+                    <tr>
+                        <th class="ps-4">Nome</th>
+                        <th>Matrícula</th>
+                        <th>Escola</th>
+                        <th class="text-end pe-4">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for aluno in alunos %}
+                    <tr>
+                        <td class="ps-4 fw-bold text-dark">{{ aluno.nome }}</td>
+                        <td><span class="badge bg-light text-dark border">{{ aluno.matricula }}</span></td>
+                        <td>{{ aluno.escola }}</td>
+                        <td class="text-end pe-4">
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-danger border-0" 
+                                    onclick="abrirModalExclusao('{{ aluno.nome }}', '{% url 'rotas:remover_aluno' rota.pk aluno.pk %}')">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center p-5">
+            <div class="mb-3 text-muted opacity-25"><i class="bi bi-people fs-1"></i></div>
+            <h6 class="fw-bold text-muted">Nenhum aluno vinculado</h6>
+            <p class="small text-muted">Adicione alunos para começar a usar esta rota.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="modal fade" id="modalExcluirAluno" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-5 text-center">
+                <div class="mb-4">
+                    <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-person-x-fill text-danger fs-1"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">Remover Aluno?</h4>
+                <p class="text-muted mb-4">
+                    Tem certeza que deseja remover <strong id="nomeAlunoModal"></strong> desta rota?
+                </p>
+                
+                <form id="formExcluirAluno" method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold">Sim, Remover</button>
+                        <button type="button" class="btn btn-light btn-lg rounded-pill border" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalExclusao(nome, url) {
+        // Preenche o nome no modal
+        document.getElementById('nomeAlunoModal').textContent = nome;
+        // Atualiza o action do formulário com a URL correta
+        document.getElementById('formExcluirAluno').action = url;
+        // Abre o modal usando Bootstrap
+        var modal = new bootstrap.Modal(document.getElementById('modalExcluirAluno'));
+        modal.show();
+    }
+</script>
+
+{% endblock %}
