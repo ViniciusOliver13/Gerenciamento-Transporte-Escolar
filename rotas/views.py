@@ -69,7 +69,7 @@ class RotaUpdateView(UpdateView):
         return form
     
     def get_success_url(self):
-        messages.success(self.request, f'✅ Rota "{self.object.nome}" atualizada!')
+        messages.success(self.request, f' Rota "{self.object.nome}" atualizada!')
         return reverse_lazy('rotas:rota_detail', kwargs={'pk': self.object.pk})
 
 

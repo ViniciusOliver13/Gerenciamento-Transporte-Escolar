@@ -7,7 +7,6 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -46,7 +45,8 @@
 
     <nav class="navbar navbar-expand-lg navbar-glass sticky-top py-3 shadow-sm">
       <div class="container">
-        <a class="navbar-brand d-flex align-items-center fw-bold text-dark gap-2" href="{% url 'usuarios:home' %}">
+        
+        <a class="navbar-brand d-flex align-items-center fw-bold text-dark gap-2" href="/">
             <div class="bg-primary text-white rounded p-1 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
                 <i class="bi bi-bus-front-fill"></i>
             </div>
@@ -58,39 +58,60 @@
         </button>
         
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto align-items-center gap-2">
-            <li class="nav-item"><a class="nav-link" href="{% url 'usuarios:home' %}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Veículos</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Motoristas</a></li>
+          
+          {% if not user.aluno_profile and not user.motorista_profile %}
+          <ul class="navbar-nav mx-auto align-items-center gap-2">
+            <li class="nav-item"><a class="nav-link" href="/">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'veiculos:veiculo_list' %}">Veículos</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'usuarios:motorista_list' %}">Motoristas</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'educacional:aluno_list' %}">Alunos</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'rotas:rota_list' %}">Rotas</a></li>
+          </ul>
+          {% else %}
+          <ul class="navbar-nav mx-auto"></ul> 
+          {% endif %}
+
+          <ul class="navbar-nav ms-auto">
             
+            {% if not user.aluno_profile and not user.motorista_profile %}
             <li class="nav-item d-none d-lg-block mx-2 border-end" style="height: 20px;"></li>
+            {% endif %}
             
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                    <span class="small fw-bold text-dark d-none d-md-block">
+                        {% if user.aluno_profile %}
+                            {{ user.aluno_profile.nome|truncatechars:15 }}
+                        {% elif user.motorista_profile %}
+                            {{ user.motorista_profile.nome|truncatechars:15 }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}
+                    </span>
                     <div class="rounded-circle bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
                         <i class="bi bi-person-fill"></i>
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-3">
-                    <li class="px-3 py-2 border-bottom">
-                        <small class="text-muted d-block">Logado como</small>
-                        <strong class="d-block">{{ user.username }}</strong>
-                    </li>
-                    <li><a class="dropdown-item small" href="/admin"><i class="bi bi-gear me-2"></i> Painel Admin</a></li>
-                    <li><hr class="dropdown-divider"></li>
+                    <li class="px-3 py-1 text-muted small text-uppercase fw-bold">Conta</li>
+                    
+                    {% if not user.aluno_profile and not user.motorista_profile %}
+                        <li><a class="dropdown-item small" href="/admin">Painel Admin</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                    {% endif %}
+                    
                     <li>
-                        <form action="{% url 'logout' %}" method="post" class="m-0">
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
                             {% csrf_token %}
-                            <button type="submit" class="dropdown-item small text-danger border-0 bg-transparent w-100 text-start">
-                                <i class="bi bi-box-arrow-right me-2"></i> Sair
+                            <button type="submit" class="dropdown-item small text-danger fw-bold">
+                                <i class="bi bi-box-arrow-right me-1"></i> Sair do Sistema
                             </button>
                         </form>
                     </li>
                 </ul>
             </li>
           </ul>
+
         </div>
       </div>
     </nav>
@@ -102,8 +123,6 @@
                     <div class="d-flex align-items-center">
                         {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2 fs-5"></i>{% endif %}
                         {% if message.tags == 'danger' %}<i class="bi bi-exclamation-octagon-fill me-2 fs-5"></i>{% endif %}
-                        {% if message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>{% endif %}
-                        {% if message.tags == 'info' %}<i class="bi bi-info-circle-fill me-2 fs-5"></i>{% endif %}
                         <div>{{ message }}</div>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

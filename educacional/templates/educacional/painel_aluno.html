@@ -1,11 +1,82 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<h2>Olá, {{ aluno.nome }}</h2>
-<ul>
-  {% for rota in rotas %}
-    <li>{{ rota.nome }}</li>
-  {% empty %}
-    <li>Você ainda não está em nenhuma rota.</li>
-  {% endfor %}
-</ul>
+<div class="container py-4">
+    
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h6 class="text-uppercase text-muted small fw-bold ls-1 mb-1">Área do Estudante</h6>
+            <h2 class="fw-bold text-dark mb-0">Olá, {{ aluno.nome }}</h2>
+        </div>
+        <div class="d-none d-md-block">
+            <span class="badge bg-light text-secondary border px-3 py-2 rounded-pill">
+                Ano Letivo 2025
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4 text-center overflow-hidden">
+                <div class="card-header bg-primary border-0 py-4" style="background: linear-gradient(135deg, #0d6efd 0%, #0043a8 100%);">
+                    <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center text-primary fw-bold shadow-sm" 
+                         style="width: 80px; height: 80px; font-size: 2rem; border: 4px solid rgba(255,255,255,0.3);">
+                        {{ aluno.nome|slice:":2"|upper }}
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-dark mb-1">{{ aluno.nome }}</h4>
+                    <p class="text-muted small mb-3">Matrícula: {{ aluno.matricula }}</p>
+                    
+                    {% if aluno.status_aluno == 'ATIVO' %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-4 py-2 mb-3">
+                            <i class="bi bi-check-circle-fill me-1"></i> Cadastro Regular
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-4 py-2 mb-3">Irregular</span>
+                    {% endif %}
+                    
+                    <hr class="opacity-10 my-3">
+                    <div class="text-start">
+                        <small class="text-uppercase text-muted fw-bold x-small">Instituição</small>
+                        <p class="fw-semibold text-dark mb-0">{{ aluno.escola }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            {% if rotas %}
+                {% for rota in rotas %}
+                <div class="card border-0 shadow-sm rounded-4 mb-4 hover-card">
+                    <div class="card-body p-4">
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 me-3">
+                                <i class="bi bi-bus-front-fill fs-3"></i>
+                            </div>
+                            
+                            <div class="flex-grow-1">
+                                <h5 class="fw-bold mb-0 text-dark">{{ rota.nome }}</h5>
+                                <p class="text-muted small mb-0 text-uppercase ls-1">{{ rota.turno }}</p>
+                            </div>
+
+                            <div class="text-end ps-3 border-start">
+                                <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.65rem;">Horário Previsto</small>
+                                <span class="badge bg-dark fs-5 shadow-sm">{{ rota.horario_inicio|default:"--" }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-warning rounded-4 shadow-sm">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Você ainda não está vinculado a nenhuma rota.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

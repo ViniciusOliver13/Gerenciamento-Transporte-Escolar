@@ -6,26 +6,22 @@
         <div class="card-body p-5">
             <div class="mb-4">
                 <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                    <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
+                    <i class="bi bi-trash-fill text-danger fs-1"></i>
                 </div>
             </div>
             
-            <h3 class="fw-bold text-dark mb-2">Excluir Rota?</h3>
+            <h3 class="fw-bold text-dark mb-2">Excluir Veículo?</h3>
             <p class="text-muted mb-4">
-                Você está prestes a excluir a rota <strong>{{ rota.nome }}</strong>.<br>
-                {% if rota.alunos.count > 0 %}
-                    <span class="text-danger fw-bold d-block mt-2">
-                        Atenção: Existem {{ rota.alunos.count }} alunos vinculados a esta rota!
-                    </span>
-                {% endif %}
+                Você vai remover o veículo <strong>{{ object.modelo }}</strong> ({{ object.placa }}) da frota.<br>
+                <span class="text-danger small fw-bold">Isso não pode ser desfeito.</span>
             </p>
 
             <form method="post" class="d-grid gap-2">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">
-                    Sim, Excluir Rota
+                    Sim, Excluir Veículo
                 </button>
-                <a href="{% url 'rotas:rota_list' %}" class="btn btn-light btn-lg rounded-pill border fw-bold text-muted">
+                <a href="{% url 'veiculos:veiculo_list' %}" class="btn btn-light btn-lg rounded-pill border fw-bold text-muted">
                     Cancelar
                 </a>
             </form>
