@@ -5,9 +5,9 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
+# ==============================================================================
+# SECURITY SETTINGS
+# ==============================================================================
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-#5okl&&nrf#i^&u0^((+2dw#_ix7c2j+cj*@se^$muh_q7yklc'
 
@@ -17,9 +17,11 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
+# ==============================================================================
+# APPLICATION DEFINITION
+# ==============================================================================
 INSTALLED_APPS = [
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,11 +30,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # Apps do projeto
-    'educacional', 
-    'rotas', 
     'usuarios',
+    'educacional',
+    'rotas',
     'veiculos',
-
 ]
 
 MIDDLEWARE = [
@@ -47,6 +48,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'transporte_escolar.urls'
 
+
+# ==============================================================================
+# TEMPLATES
+# ==============================================================================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -54,9 +59,11 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -65,9 +72,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'transporte_escolar.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
+# ==============================================================================
+# DATABASE
+# ==============================================================================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -76,9 +83,9 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# ==============================================================================
+# PASSWORD VALIDATION
+# ==============================================================================
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -95,9 +102,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
+# ==============================================================================
+# INTERNATIONALIZATION
+# ==============================================================================
 LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Fortaleza'
@@ -107,20 +114,51 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+# ==============================================================================
+# STATIC FILES (CSS, JavaScript, Images)
+# ==============================================================================
+STATIC_URL = '/static/'
 
-STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'home'
+# ==============================================================================
+# MEDIA FILES (User Uploads)
+# ==============================================================================
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# ==============================================================================
+# AUTHENTICATION
+# ==============================================================================
+LOGIN_URL = 'login'
+
+LOGIN_REDIRECT_URL = 'usuarios:redirect_usuario'
 
 LOGOUT_REDIRECT_URL = 'login'
 
-MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# ==============================================================================
+# DEFAULT SETTINGS
+# ==============================================================================
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ==============================================================================
+# MESSAGES FRAMEWORK (Bootstrap 5 compatibility)
+# ==============================================================================
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',  # Bootstrap usa 'danger' em vez de 'error'
+}

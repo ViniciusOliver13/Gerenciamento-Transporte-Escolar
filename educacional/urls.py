@@ -1,10 +1,22 @@
-# educacional/urls.py
 from django.urls import path
-from .views import AlunoListView, AlunoCreateView, AlunoUpdateView, AlunoDeleteView
+from . import views
+
+# Define o namespace da app
+app_name = 'educacional'
 
 urlpatterns = [
-    path('', AlunoListView.as_view(), name='aluno_list'),
-    path('novo/', AlunoCreateView.as_view(), name='aluno_create'),
-    path('editar/<int:pk>/', AlunoUpdateView.as_view(), name='aluno_update'),
-    path('deletar/<int:pk>/', AlunoDeleteView.as_view(), name='aluno_delete'),
+    # Listagem de alunos
+    path('', views.AlunoListView.as_view(), name='aluno_list'),
+    
+    # Criar novo aluno
+    path('novo/', views.AlunoCreateView.as_view(), name='aluno_create'),
+    
+    # Editar aluno existente
+    path('<int:pk>/editar/', views.AlunoUpdateView.as_view(), name='aluno_update'),
+    
+    # Deletar aluno
+    path('<int:pk>/deletar/', views.AlunoDeleteView.as_view(), name='aluno_delete'),
+
+    path('painel/', views.painel_aluno, name='painel_aluno'),  # Adiciona painel do aluno
+
 ]

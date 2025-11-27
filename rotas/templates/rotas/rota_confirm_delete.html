@@ -1,36 +1,34 @@
 {% extends 'base.html' %}
 
-{% block title %}Deletar Rota{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-danger">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão</h5>
-            </div>
-            <div class="card-body">
-                <p>Tem certeza que deseja deletar a rota <strong>"{{ rota.nome }}"</strong>?</p>
-                
-                {% if rota.alunos.count > 0 %}
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i> 
-                    Esta rota possui <strong>{{ rota.alunos.count }} aluno(s)</strong> alocados.
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="card border-0 shadow-lg text-center rounded-4" style="max-width: 500px;">
+        <div class="card-body p-5">
+            <div class="mb-4">
+                <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                    <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
                 </div>
-                {% endif %}
-
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Sim, Deletar
-                        </button>
-                        <a href="{% url 'rotas:rota_list' %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                    </div>
-                </form>
             </div>
+            
+            <h3 class="fw-bold text-dark mb-2">Excluir Rota?</h3>
+            <p class="text-muted mb-4">
+                Você está prestes a excluir a rota <strong>{{ rota.nome }}</strong>.<br>
+                {% if rota.alunos.count > 0 %}
+                    <span class="text-danger fw-bold d-block mt-2">
+                        Atenção: Existem {{ rota.alunos.count }} alunos vinculados a esta rota!
+                    </span>
+                {% endif %}
+            </p>
+
+            <form method="post" class="d-grid gap-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">
+                    Sim, Excluir Rota
+                </button>
+                <a href="{% url 'rotas:rota_list' %}" class="btn btn-light btn-lg rounded-pill border fw-bold text-muted">
+                    Cancelar
+                </a>
+            </form>
         </div>
     </div>
 </div>

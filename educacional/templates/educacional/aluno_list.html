@@ -8,7 +8,7 @@
             <h2 class="fw-bold text-dark mb-0">Gestão de Alunos</h2>
             <p class="text-muted small mb-0">Gerencie matrículas e documentações</p>
         </div>
-        <a href="{% url 'aluno_create' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+        <a href="{% url 'educacional:aluno_create' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
             <i class="bi bi-plus-lg me-1"></i> Novo Aluno
         </a>
     </div>
@@ -97,10 +97,10 @@
 
                             <td class="pe-4 text-end">
                                 <div class="btn-group">
-                                    <a href="{% url 'aluno_update' aluno.pk %}" class="btn btn-outline-secondary btn-sm border-0" title="Editar">
+                                    <a href="{% url 'educacional:aluno_update' aluno.pk %}" class="btn btn-outline-secondary btn-sm border-0" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <a href="{% url 'aluno_delete' aluno.pk %}" class="btn btn-outline-danger btn-sm border-0" title="Excluir">
+                                    <a href="{% url 'educacional:aluno_delete' aluno.pk %}" class="btn btn-outline-danger btn-sm border-0" title="Excluir">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
@@ -112,7 +112,7 @@
                                 <div class="text-muted">
                                     <i class="bi bi-people fs-1 d-block mb-3 opacity-50"></i>
                                     <p class="mb-1">Nenhum aluno encontrado.</p>
-                                    <a href="{% url 'aluno_create' %}" class="btn btn-link">Cadastrar o primeiro</a>
+                                    <a href="{% url 'educacional:aluno_create' %}" class="btn btn-link">Cadastrar o primeiro</a>
                                 </div>
                             </td>
                         </tr>

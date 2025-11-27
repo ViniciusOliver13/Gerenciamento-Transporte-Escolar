@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-dark text-white p-4 rounded-top-4">
+                    <h4 class="mb-0 fw-bold">
+                        {% if form.instance.pk %}Editar Veículo{% else %}Cadastrar Veículo{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body p-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <h6 class="text-uppercase text-muted fw-bold mb-3 small ls-1"><i class="bi bi-card-heading me-1"></i> Dados do Veículo</h6>
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input type="text" name="placa" class="form-control rounded-3" id="id_placa" value="{{ form.placa.value|default:'' }}" required>
+                                    <label for="id_placa">Placa</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input type="text" name="modelo" class="form-control rounded-3" id="id_modelo" value="{{ form.modelo.value|default:'' }}" required>
+                                    <label for="id_modelo">Modelo</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-5">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" name="ano" class="form-control rounded-3" id="id_ano" value="{{ form.ano.value|default:'' }}">
+                                    <label for="id_ano">Ano de Fabricação</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" name="capacidade" class="form-control rounded-3" id="id_cap" value="{{ form.capacidade.value|default:'' }}">
+                                    <label for="id_cap">Lotação Máxima</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'veiculos:veiculo_list' %}" class="btn btn-light px-4 rounded-pill border">Cancelar</a>
+                            <button type="submit" class="btn btn-dark px-5 rounded-pill fw-bold">Salvar Veículo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
