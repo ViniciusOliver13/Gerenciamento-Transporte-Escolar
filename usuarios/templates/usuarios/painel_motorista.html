@@ -1,114 +1,119 @@
 {% extends 'base.html' %}
+{% load meus_filtros %}
 
 {% block content %}
-<div class="container py-4">
-
+  <div class="container py-4">
     {% for rota in rotas %}
-    
-    <div class="row align-items-center mb-4 mt-4">
+      <!-- Cabeçalho da rota -->
+      <div class="row align-items-center mb-4 mt-4">
         <div class="col-md-8">
-            <h6 class="text-uppercase text-muted small fw-bold ls-1 mb-1">Painel Operacional</h6>
-            <h2 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-                {{ rota.nome }}
-            </h2>
+          <h6 class="text-uppercase text-muted small fw-bold ls-1 mb-1">Painel Operacional</h6>
+          <h2 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">{{ rota.nome }}</h2>
         </div>
         <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <div class="d-inline-flex align-items-center bg-white px-4 py-2 rounded-pill shadow-sm border">
-                <i class="bi bi-clock-history text-primary me-2 fs-5"></i>
-                <div class="text-start">
-                    <small class="d-block text-muted lh-1" style="font-size: 0.7rem;">HORA DE SAÍDA</small>
-                    <span class="fw-bold fs-5 text-dark">{{ rota.horario_inicio|default:"--" }}</span>
-                </div>
+          <div class="d-inline-flex align-items-center bg-white px-4 py-2 rounded-pill shadow-sm border">
+            <i class="bi bi-clock-history text-primary me-2 fs-5"></i>
+            <div class="text-start">
+              <small class="d-block text-muted lh-1" style="font-size: 0.7rem;">HORA DE SAÍDA</small>
+              <span class="fw-bold fs-5 text-dark">{{ rota.horario_inicio|default:'--' }}</span>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <div class="row g-4 mb-5 border-bottom pb-5">
-        
+      <div class="row g-4 mb-5 border-bottom pb-5">
+        <!-- Lista de passageiros -->
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-                <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="fw-bold mb-0">Lista de Passageiros</h5>
-                        <p class="text-muted small mb-0">Alunos cadastrados nesta rota</p>
-                    </div>
-                    <span class="badge bg-primary rounded-pill px-3">Total: {{ rota.alunos.count }}</span>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light small text-uppercase text-muted">
-                            <tr>
-                                <th class="ps-4">Aluno</th>
-                                <th>Escola</th>
-                                <th class="text-end pe-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for aluno in rota.alunos.all %}
-                            <tr>
-                                <td class="ps-4">
-                                    <div class="d-flex align-items-center">
-                                        {% if aluno.status_aluno == 'INATIVO' %}
-                                            <div class="rounded-circle bg-danger bg-opacity-10 text-danger fw-bold d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                                {{ aluno.nome|slice:":2"|upper }}
-                                            </div>
-                                        {% else %}
-                                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                                {{ aluno.nome|slice:":2"|upper }}
-                                            </div>
-                                        {% endif %}
-                                        
-                                        <div>
-                                            <span class="fw-bold d-block text-dark">{{ aluno.nome }}</span>
-                                            <small class="text-muted">Mat: {{ aluno.matricula }}</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="d-block fw-semibold text-dark">{{ aluno.escola }}</span>
-                                </td>
-                                <td class="text-end pe-4">
-                                    {% if aluno.status_aluno == 'ATIVO' %}
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Regular</span>
-                                    {% else %}
-                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">Irregular</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="3" class="text-center py-4 text-muted">Nenhum aluno nesta rota.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+            <div class="card-header bg-white border-bottom p-4 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="fw-bold mb-0">Lista de Passageiros</h5>
+                <p class="text-muted small mb-0">Alunos cadastrados nesta rota</p>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-primary rounded-pill px-3 d-block mb-1">Total alunos: {{ rota.alunos.count }}</span>
+                <span class="badge bg-success-subtle text-success rounded-pill px-3">Confirmados hoje (ida/volta): {{ confirma_por_rota|dict_get:rota.id }}</span>
+              </div>
             </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light small text-uppercase text-muted">
+                  <tr>
+                    <th class="ps-4">Aluno</th>
+                    <th>Escola</th>
+                    <th class="text-end pe-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for aluno in rota.alunos.all %}
+                    <tr>
+                      <td class="ps-4">
+                        <div class="d-flex align-items-center">
+                          {% if aluno.status_aluno == 'INATIVO' %}
+                            <div class="rounded-circle bg-danger bg-opacity-10 text-danger fw-bold d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">{{ aluno.nome|slice:':2'|upper }}</div>
+                          {% else %}
+                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">{{ aluno.nome|slice:':2'|upper }}</div>
+                          {% endif %}
+
+                          <div>
+                            <span class="fw-bold d-block text-dark">{{ aluno.nome }}</span>
+                            <small class="text-muted">Mat: {{ aluno.matricula }}</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="d-block fw-semibold text-dark">{{ aluno.escola }}</span>
+                      </td>
+                      <td class="text-end pe-4">
+                        {% with conf_rota=confirmacoes|dict_get:rota.id %}
+                          {% with tipos=conf_rota|tipos_por_aluno:aluno.id %}
+                            {% if 'IDA' in tipos and 'VOLTA' in tipos %}
+                              <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Ida e Volta</span>
+                            {% elif 'IDA' in tipos %}
+                              <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">Só Ida</span>
+                            {% elif 'VOLTA' in tipos %}
+                              <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">Só Volta</span>
+                            {% else %}
+                              <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill">Sem confirmação</span>
+                            {% endif %}
+                          {% endwith %}
+                        {% endwith %}
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="3" class="text-center py-4 text-muted">Nenhum aluno nesta rota.</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
+        <!-- Card do veículo -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 mb-4 bg-dark text-white">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-white bg-opacity-10 p-2 rounded-3 me-3">
-                            <i class="bi bi-speedometer2 fs-4 text-white"></i>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold mb-0">Veículo {{ rota.veiculo.placa|default:"--" }}</h6>
-                            <small class="text-white-50">{{ rota.veiculo.modelo|default:"Não atribuído" }}</small>
-                        </div>
-                    </div>
+          <div class="card border-0 shadow-sm rounded-4 mb-4 bg-dark text-white">
+            <div class="card-body p-4">
+              <div class="d-flex align-items-center">
+                <div class="bg-white bg-opacity-10 p-2 rounded-3 me-3">
+                  <i class="bi bi-speedometer2 fs-4 text-white"></i>
                 </div>
+                <div>
+                  <h6 class="fw-bold mb-0">Veículo {{ rota.veiculo.placa|default:'--' }}</h6>
+                  <small class="text-white-50">{{ rota.veiculo.modelo|default:'Não atribuído' }}</small>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-
-    </div>
+      </div>
     {% empty %}
-    <div class="alert alert-info text-center mt-5">
+      <div class="alert alert-info text-center mt-5">
         <h4>Nenhuma rota encontrada</h4>
         <p>Você não tem rotas escaladas para hoje.</p>
-    </div>
+      </div>
     {% endfor %}
-</div>
+  </div>
 {% endblock %}

@@ -24,4 +24,9 @@ urlpatterns = [
     
     # Deletar rota
     path('<int:pk>/deletar/', views.RotaDeleteView.as_view(), name='rota_delete'),
+
+    # Confirmar viagem
+    path('<int:rota_id>/confirmar-viagem/', views.confirmar_viagem, name='confirmar_viagem'),
+
+    path('<int:rota_id>/confirmar-viagem/<str:tipo>/', views.confirmar_viagem, name='confirmar_viagem'),
 ]

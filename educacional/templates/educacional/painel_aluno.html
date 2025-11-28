@@ -70,6 +70,45 @@
 
                     </div>
                 </div>
+                <div class="list-group-item list-group-item-action mb-2 rounded-3 shadow-sm border d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1 fw-bold">
+                            <i class="bi bi-signpost-2 me-1"></i>{{ rota.nome }}
+                        </h6>
+                        <div class="small text-muted mb-1">
+                            <i class="bi bi-clock me-1"></i> Horário: {{ rota.horario_inicio|time:"H:i" }}
+                            |
+                            <i class="bi bi-geo-alt me-1"></i> Turno: {{ rota.get_turno_display }}
+                        </div>
+                        {% if rota.veiculo %}
+                            <div class="text-secondary small">
+                                <i class="bi bi-truck me-1"></i>
+                                Veículo: <strong>{{ rota.veiculo.modelo }}</strong>
+                                <span class="badge bg-light text-dark border ms-2">{{ rota.veiculo.placa }}</span>
+                                <small class="ms-2">Capacidade: {{ rota.veiculo.capacidade }}</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex flex-column align-items-end gap-2">
+    <span class="badge bg-primary-subtle text-primary px-3 py-2">Ativa</span>
+
+    <form method="post" action="{% url 'rotas:confirmar_viagem' rota.id 'IDA' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">
+            <i class="bi bi-arrow-up-circle me-1"></i> Confirmar ida
+        </button>
+    </form>
+
+    <form method="post" action="{% url 'rotas:confirmar_viagem' rota.id 'VOLTA' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-success rounded-pill">
+            <i class="bi bi-arrow-down-circle me-1"></i> Confirmar volta
+        </button>
+    </form>
+</div>
+
+                </div>
+
                 {% endfor %}
             {% else %}
                 <div class="alert alert-warning rounded-4 shadow-sm">

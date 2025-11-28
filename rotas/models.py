@@ -36,19 +36,24 @@ class Rota(models.Model):
 
 
 class ConfirmacaoViagem(models.Model):
-    """
-    O Aluno cria esse registro para dizer: "Vou amanhã de manhã".
-    O Gestor usa isso para ver a demanda (RF-11).
-    """
+
+    class TipoViagem(models.TextChoices):
+        IDA = 'IDA', 'Ida'
+        VOLTA = 'VOLTA', 'Volta'
+
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     rota = models.ForeignKey(Rota, on_delete=models.CASCADE)
     data_viagem = models.DateField()
-    data_confirmacao = models.DateTimeField(auto_now_add=True) # Quando ele clicou
-    
+    data_confirmacao = models.DateTimeField(auto_now_add=True)
+
+    tipo = models.CharField(
+        max_length=10,
+        choices=TipoViagem.choices,
+        default=TipoViagem.IDA,  
+    )
+
     class Meta:
-        unique_together = ('aluno', 'rota', 'data_viagem') # Evita duplicar confirmação pro mesmo dia
-        verbose_name = "Confirmação de Viagem"
-        verbose_name_plural = "Confirmações de Viagem"
+        unique_together = ('aluno', 'rota', 'data_viagem', 'tipo')
 
     def __str__(self):
         return f"{self.aluno.nome} - {self.rota.nome} ({self.data_viagem})"
