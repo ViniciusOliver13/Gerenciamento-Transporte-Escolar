@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
@@ -9,6 +10,8 @@ from .models import Rota
 from educacional.models import Aluno
 from veiculos.models import Veiculo
 from usuarios.models import Motorista
+from .models import Rota, ConfirmacaoViagem
+from django.contrib.auth.decorators import login_required
 
 
 # ============== LISTAGEM DE ROTAS ==============
@@ -194,3 +197,38 @@ class RotaDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, '✅ Rota deletada com sucesso!')
         return super().delete(request, *args, **kwargs)
+
+
+@login_required
+def confirmar_viagem(request, rota_id, tipo):
+    aluno = getattr(request.user, 'aluno_profile', None)
+    if aluno is None:
+        messages.error(request, 'Somente alunos podem confirmar viagens.')
+        return redirect('usuarios:home')
+
+    rota = get_object_or_404(Rota, id=rota_id)
+    data_viagem = date.today()
+
+    if tipo not in ['IDA', 'VOLTA']:
+        messages.error(request, 'Tipo de viagem inválido.')
+        return redirect('educacional:painel_aluno')
+
+    confirmacao, criada = ConfirmacaoViagem.objects.get_or_create(
+        aluno=aluno,
+        rota=rota,
+        data_viagem=data_viagem,
+        tipo=tipo,
+    )
+
+    if criada:
+        messages.success(
+            request,
+            f'Viagem de {tipo.lower()} confirmada hoje na rota "{rota.nome}".'
+        )
+    else:
+        messages.info(
+            request,
+            f'Você já tinha confirmado a {tipo.lower()} de hoje na rota "{rota.nome}".'
+        )
+
+    return redirect('educacional:painel_aluno')

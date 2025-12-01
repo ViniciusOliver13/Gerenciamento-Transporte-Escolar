@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
@@ -8,9 +9,10 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.db.models import Q
 from .models import Motorista
+from datetime import date
+hoje = date.today()
 
-
-from rotas.models import Rota
+from rotas.models import ConfirmacaoViagem, Rota
 
 @login_required
 def redirect_usuario(request):
@@ -41,13 +43,36 @@ def painel_aluno(request):
 @login_required
 def painel_motorista(request):
     motorista = getattr(request.user, 'motorista_profile', None)
-    if motorista is not None:
-        rotas = Rota.objects.filter(motorista=motorista)
-    else:
-        rotas = []
-    return render(request, 'usuarios/painel_motorista.html', {'motorista': motorista, 'rotas': rotas})
+    if motorista is None:
+        return redirect('usuarios:home')
 
+    rotas = Rota.objects.filter(motorista=motorista).select_related('veiculo').prefetch_related('alunos')
+    hoje = date.today()
 
+    # {rota_id: {aluno_id: set(['IDA','VOLTA'])}}
+    confirmacoes = {}
+    qs = ConfirmacaoViagem.objects.filter(rota__in=rotas, data_viagem=hoje)
+    for c in qs:
+        confirmacoes.setdefault(c.rota_id, {})
+        confirmacoes[c.rota_id].setdefault(c.aluno_id, set())
+        confirmacoes[c.rota_id][c.aluno_id].add(c.tipo)
+
+    # total (ida+volta) por rota
+    confirma_por_rota = {}
+    for rota_id, alunos_dict in confirmacoes.items():
+        total = 0
+        for tipos in alunos_dict.values():
+            total += len(tipos)
+        confirma_por_rota[rota_id] = total
+
+    context = {
+        'motorista': motorista,
+        'rotas': rotas,
+        'confirmacoes': confirmacoes,
+        'confirma_por_rota': confirma_por_rota,
+        'hoje': hoje,
+    }
+    return render(request, 'usuarios/painel_motorista.html', context)
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
