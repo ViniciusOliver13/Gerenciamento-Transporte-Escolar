@@ -19,8 +19,8 @@
 
 ## 1. Objetivo do sistema
 
-O *Sistema de Transporte Escolar* é uma solução web para apoiar prefeituras e secretarias de educação no gerenciamento da frota escolar municipal.  
-O objetivo é centralizar informações de *alunos, **motoristas, **veículos* e *rotas, substituindo planilhas manuais por uma plataforma que integra **Gestores, **Motoristas* e *Alunos* em um mesmo ambiente.
+O *Sistema de Transporte Escolar* é uma solução web para apoiar prefeituras através das secretarias de educação no gerenciamento da frota escolar intermunicipal.  
+O objetivo é centralizar informações de *alunos*, *motoristas*, *veículos* e *rotas*, substituindo planilhas manuais por uma plataforma que integra *Gestores*, *Motoristas* e *Alunos* em um mesmo ambiente.
 
 ---
 
@@ -36,7 +36,7 @@ O objetivo é centralizar informações de *alunos, **motoristas, **veículos* e
 ### Módulo Motorista (Painel Operacional)
 - Visualização apenas das rotas atribuídas ao motorista logado.
 - Lista de passageiros por rota com situação do aluno:
-  - Sem confirmação, confirmou *ida, **volta* ou *ida e volta*.
+  - Sem confirmação, confirmou *ida*, *volta* ou *ida e volta*.
 - Registro de ocorrências (problemas mecânicos, atrasos, aluno ausente etc.).
 
 ### Módulo Aluno (Portal do Aluno)
@@ -126,7 +126,7 @@ Acesse em: http://127.0.0.1:8000/
 | aluno1          | Aluno             | Painel do aluno, confirmação ida/volta|
 
 4. Faça login como:
-   - *Aluno: acesse o painel do aluno, confirme **ida* e/ou *volta* em uma rota.  
+   - *Aluno*: acesse o painel do aluno, confirme *ida* e/ou *volta* em uma rota.  
    - *Motorista*: veja no painel do motorista a lista de passageiros e o status de confirmação de cada aluno.  
    - *Gestor*: gerencie cadastros, rotas e acompanhe o funcionamento geral.
 
