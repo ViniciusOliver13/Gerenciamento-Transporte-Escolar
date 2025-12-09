@@ -15,71 +15,64 @@
   </a>
 </p>
 
-## 📌 Sobre o Projeto
+---
 
-O **Sistema de Transporte Escolar** é uma solução web desenvolvida para auxiliar prefeituras e secretarias de transporte no gerenciamento logístico da frota escolar municipal.
+## 1. Objetivo do sistema
 
-O sistema resolve o problema da descentralização de informações, substituindo planilhas e controles manuais por uma plataforma unificada que conecta **Gestores**, **Motoristas** e **Alunos**.
+O *Sistema de Transporte Escolar* é uma solução web para apoiar prefeituras e secretarias de educação no gerenciamento da frota escolar municipal.  
+O objetivo é centralizar informações de *alunos, **motoristas, **veículos* e *rotas, substituindo planilhas manuais por uma plataforma que integra **Gestores, **Motoristas* e *Alunos* em um mesmo ambiente.
 
 ---
 
-## Screenshots
-
-### Tela de Acesso (Login Unificado)
-![Tela de Login](screenshots/login_screen.png)
-*(A interface direciona automaticamente cada perfil para seu painel específico)*
-
----
-
-## Funcionalidades Principais
-
-O sistema conta com controle de acesso baseado em papéis (RBAC) e redirecionamento inteligente:
+## 2. Principais funcionalidades
 
 ### Módulo Gestor (Administrativo)
-- **Dashboard:** Visão geral da frota e alertas.
-- **Gestão de Frota:** Cadastro de veículos e controle de motoristas.
-- **Gestão de Alunos:** Matrícula, upload de declaração escolar (PDF) e controle de validade do cadastro.
-- **Alertas Automáticos:** Notificação visual de CNH vencida (Motoristas) e Cadastros a renovar (Alunos).
-- **Roteirização:** Criação de rotas, definição de horários e alocação de alunos.
+- Dashboard com visão geral das rotas, veículos e alertas.
+- Cadastro e gestão de veículos, motoristas e alunos.
+- Upload e controle de validade da declaração escolar do aluno.
+- Alertas para CNH vencida e cadastros de alunos a renovar.
+- Criação de rotas, definição de horários e alocação de alunos.
 
-### Módulo Motorista (Operacional - Mobile First)
-- **Minhas Rotas:** Visualização apenas das rotas atribuídas ao motorista logado.
-- **Lista de passageiros**: lista para cada rota, a situação do aluno. Se confirmou **ida**, **volta** ou **ida e volta**.
-- **Ocorrências:** Reporte rápido de problemas mecânicos ou ausências.
+### Módulo Motorista (Painel Operacional)
+- Visualização apenas das rotas atribuídas ao motorista logado.
+- Lista de passageiros por rota com situação do aluno:
+  - Sem confirmação, confirmou *ida, **volta* ou *ida e volta*.
+- Registro de ocorrências (problemas mecânicos, atrasos, aluno ausente etc.).
 
-### Módulo Aluno (Portal)
-- **Agendamento:** Confirmação de presença ("Vou na Ida" / "Vou na Volta") para o dia seguinte.
-- **Minha Rota:** Visualização do veículo e horário previsto.
-
----
-
-## Tecnologias Utilizadas
-
-* **Backend:** Python 3, Django Framework.
-* **Frontend:** HTML5, CSS3, Bootstrap 5 (Responsivo), Django Templates.
-* **Banco de Dados:** SQLite (Desenvolvimento)
-* **Controle de Versão:** Git & GitHub.
-* **Metodologia:** Kanban.
+### Módulo Aluno (Portal do Aluno)
+- Confirmação diária de presença na rota:
+  - Botões separados para *“Vou na Ida”* e *“Vou na Volta”*.
+- Visualização da(s) rota(s) em que está cadastrado, com veículo e horário previsto.
 
 ---
 
-## 📦 Como Rodar o Projeto
+## 3. Tecnologias utilizadas
 
-Pré-requisitos: Ter o **Python** e o **Git** instalados na máquina.
+- *Linguagem:* Python 3.10+
+- *Framework backend:* Django 5.0
+- *Frontend:* HTML5, CSS3, Bootstrap 5.3, Django Templates
+- *Banco de dados (desenvolvimento):* SQLite
+- *Controle de versão:* Git e GitHub
+- *Metodologia de organização:* Kanban
 
-### 1. Clonar o repositório
+---
 
-```bash
+## 4. Como executar o projeto
+
+Pré-requisitos:  
+- Git instalado  
+- Python 3.10+ instalado
+
+### 4.1 Clonar o repositório
+
+
 git clone https://github.com/ViniciusOliver13/Gerenciamento-Transporte-Escolar.git
-```
-Entrar na pasta do projeto:
-```
 cd Gerenciamento-Transporte-Escolar
-```
 
-### 2. Criar um ambiente virtual
 
-```bash
+### 4.2 Criar e ativar o ambiente virtual
+
+
 # Windows
 python -m venv venv
 .\venv\Scripts\activate
@@ -87,53 +80,63 @@ python -m venv venv
 # Linux/Mac
 python3 -m venv venv
 source venv/bin/activate
-```
 
-### 3. Instalar as dependências
 
-```bash
+### 4.3 Instalar as dependências
+
+
 pip install -r requirements.txt
-```
 
-### 4. Configurar o banco de dados
 
-```bash
+### 4.4 Configurar o banco de dados
+
+
 python manage.py makemigrations
 python manage.py migrate
-```
 
-### 5. Criar um superusuário (opcional)
 
-```bash
+### 4.5 (Opcional) Criar um superusuário
+
+
 python manage.py createsuperuser
-# Siga as instruções para criar login e senha
-``` 
-### 6. Iniciar o servidor
 
-```bash
+
+### 4.6 Executar o servidor
+
+
 python manage.py runserver
-```
-
-### Perfis para Teste
-Para validar as diferentes visões do sistema, recomenda-se criar os seguintes usuários via Painel Admin (/admin):
-
-| Usuário (Sugestão) | Perfil (Model) | O que ele vê? |
-|---|---:|---|
-| `admin` | Gestor | Acesso total, CRUDs, Relatórios. |
-| `motorista1` | Motorista | Apenas "Minhas Rotas". |
-| `aluno1` | Aluno | Painel de confirmação de presença. |
 
 
-## Estrutura do Projeto
-- **transporte-escolar/**: Configurações de redirecionamento de login e mixins de segurança.
+Acesse em: http://127.0.0.1:8000/
 
-- **usuarios/**: Gestão de contas, perfis de Motorista e Gestor.
+---
 
-- **veiculos/**: Cadastro da frota física.
-- **educacional/**: Gestão de alunos e documentos.
-- **rotas/**: Lógica principal das rotas escolares, incluindo horários e alocação de alunos.
+## 5. Como navegar/testar o protótipo
 
-##  Equipe de Desenvolvimento
+1. Acesse o painel administrativo em http://127.0.0.1:8000/admin/ com o superusuário criado.  
+2. Cadastre:
+   - Veículos, motoristas e alunos.
+   - Rotas, associando veículo, motorista e alunos.
+3. Crie usuários para cada perfil (ou vincule usuários existentes):
+
+| Usuário (exemplo) | Perfil            | Acesso principal                      |
+|-------------------|-------------------|---------------------------------------|
+| admin           | Gestor            | Gestão completa via /admin e painéis  |
+| motorista1      | Motorista         | Painel do motorista, “Minhas Rotas”   |
+| aluno1          | Aluno             | Painel do aluno, confirmação ida/volta|
+
+4. Faça login como:
+   - *Aluno: acesse o painel do aluno, confirme **ida* e/ou *volta* em uma rota.  
+   - *Motorista*: veja no painel do motorista a lista de passageiros e o status de confirmação de cada aluno.  
+   - *Gestor*: gerencie cadastros, rotas e acompanhe o funcionamento geral.
+
+## Screenshots
+
+### Tela de Acesso (Login Unificado)
+![Tela de Login](screenshots/login_screen.png)
+A interface direciona automaticamente cada perfil para seu painel específico
+
+## 6. Integrantes do grupo
 
 <table align="center">
   <tr>
